@@ -1,0 +1,23 @@
+mathematics solution
+direct differentiate x x power three
+yes
+direct differentiate x x sine
+yes
+direct differentiate x x sine one
+repeat
+no
+
+
+mathematics solution
+start create a x power two
+continue assign b a add one
+continue assign c b sine
+continue assign d c multiply five
+solve differentiate x b
+
+
+		
+mathematics solution
+start create a x power two
+continue assign b a sine two
+solve differentiate x b

@@ -1,0 +1,701 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "mathematics solution",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "SolveExpressionIntent",
+                    "slots": [
+                        {
+                            "name": "operation",
+                            "type": "operation"
+                        },
+                        {
+                            "name": "symbol",
+                            "type": "symbol"
+                        },
+                        {
+                            "name": "operationone",
+                            "type": "operation"
+                        },
+                        {
+                            "name": "operationtwo",
+                            "type": "operation"
+                        },
+                        {
+                            "name": "operationthree",
+                            "type": "operation"
+                        },
+                        {
+                            "name": "alphabet",
+                            "type": "alphabet"
+                        },
+                        {
+                            "name": "number",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "newalphabet",
+                            "type": "alphabet"
+                        },
+                        {
+                            "name": "task",
+                            "type": "task"
+                        },
+                        {
+                            "name": "variable",
+                            "type": "symbol"
+                        }
+                    ],
+                    "samples": [
+                        "solve {task} {variable} {alphabet}"
+                    ]
+                },
+                {
+                    "name": "createIntent",
+                    "slots": [
+                        {
+                            "name": "task",
+                            "type": "task"
+                        },
+                        {
+                            "name": "variable",
+                            "type": "symbol"
+                        },
+                        {
+                            "name": "symbol",
+                            "type": "symbol"
+                        },
+                        {
+                            "name": "alphabet",
+                            "type": "alphabet"
+                        },
+                        {
+                            "name": "newalphabet",
+                            "type": "alphabet"
+                        },
+                        {
+                            "name": "number",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "operation",
+                            "type": "operation"
+                        }
+                    ],
+                    "samples": [
+                        "continue {task} {newalphabet} {alphabet} {operation} {number}",
+                        "start {task} {alphabet} {symbol} {operation} {number}"
+                    ]
+                },
+                {
+                    "name": "DirectIntent",
+                    "slots": [
+                        {
+                            "name": "task",
+                            "type": "task"
+                        },
+                        {
+                            "name": "variable",
+                            "type": "symbol"
+                        },
+                        {
+                            "name": "symbol",
+                            "type": "symbol"
+                        },
+                        {
+                            "name": "alphabet",
+                            "type": "alphabet"
+                        },
+                        {
+                            "name": "newalphabet",
+                            "type": "alphabet"
+                        },
+                        {
+                            "name": "number",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "operation",
+                            "type": "operation"
+                        }
+                    ],
+                    "samples": [
+                        " direct {task} {variable} {symbol} {operation} {number}"
+                    ]
+                },
+                {
+                    "name": "AMAZON.RepeatIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.YesIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NoIntent",
+                    "samples": []
+                }
+            ],
+            "types": [
+                {
+                    "name": "operation",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "root"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "normal"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "inverse hyperbolic",
+                                "synonyms": [
+                                    "arc hyperbolic",
+                                    "hyperbolic arc"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "hyperbolic"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "z"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "y"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "x"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "divide",
+                                "synonyms": [
+                                    "division"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "inverse"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "reverse",
+                                "synonyms": [
+                                    "negative"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "hyperbolic cosecant",
+                                "synonyms": [
+                                    "hyperbolic csc",
+                                    "hyperbolic cosec"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "hyperbolic arccosecant",
+                                "synonyms": [
+                                    "hyperbolic arccsc",
+                                    "hyperbolic arccosec"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "inverse cosecant",
+                                "synonyms": [
+                                    "inverse csc",
+                                    "inverse cosec"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "hyperbolic secant",
+                                "synonyms": [
+                                    "hyperbolic arcsec"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "hyperbolic arcsecant",
+                                "synonyms": [
+                                    "hyperbolic arcsec"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "inverse secant",
+                                "synonyms": [
+                                    "inverse sec"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "hyperbolic cot",
+                                "synonyms": [
+                                    "hyperbolic cotangent"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "hyperbolic arccot",
+                                "synonyms": [
+                                    "hyperbolic arccotangent"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "inverse cot",
+                                "synonyms": [
+                                    "inverse cotangent"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "hyperbolic tan",
+                                "synonyms": [
+                                    "hyperbolic tangent"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "hyperbolic arctan",
+                                "synonyms": [
+                                    "hyperbolic arctangent"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "inverse tan",
+                                "synonyms": [
+                                    "inverse tangent"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "hyperbolic cosine",
+                                "synonyms": [
+                                    "hyperbolic cos"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "hyperbolic arccosine",
+                                "synonyms": [
+                                    "hyperbolic arccos"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "inverse cosine",
+                                "synonyms": [
+                                    "inverse cos"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "hyperbolic sine"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "hyperbolic arcsine"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "inverse sine"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "exponent",
+                                "synonyms": [
+                                    "exp"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "cosecant",
+                                "synonyms": [
+                                    "cosec",
+                                    "csc"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "secant",
+                                "synonyms": [
+                                    "sec"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "cot",
+                                "synonyms": [
+                                    "cotangent"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "tan",
+                                "synonyms": [
+                                    "tangent"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "cosine",
+                                "synonyms": [
+                                    "cos"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "sine",
+                                "synonyms": [
+                                    "sin"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "log",
+                                "synonyms": [
+                                    "logarithm"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "power"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "multiply",
+                                "synonyms": [
+                                    "times"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "subtract",
+                                "synonyms": [
+                                    "minus"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "add",
+                                "synonyms": [
+                                    "sum"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "4",
+                            "name": {
+                                "value": "integrate",
+                                "synonyms": [
+                                    "integration"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "1",
+                            "name": {
+                                "value": "simplify",
+                                "synonyms": [
+                                    "rationalize"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "2",
+                            "name": {
+                                "value": "differentiate",
+                                "synonyms": [
+                                    "differentiation"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "symbol",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "w"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "v"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "u"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "z"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "y"
+                            }
+                        },
+                        {
+                            "id": "1",
+                            "name": {
+                                "value": "x"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "alphabet",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "t",
+                                "synonyms": [
+                                    "T"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "s",
+                                "synonyms": [
+                                    "S"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "r",
+                                "synonyms": [
+                                    "R"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "q",
+                                "synonyms": [
+                                    "Q"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "p",
+                                "synonyms": [
+                                    "P"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "o",
+                                "synonyms": [
+                                    "O"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "n",
+                                "synonyms": [
+                                    "N"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "m",
+                                "synonyms": [
+                                    "M"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "l",
+                                "synonyms": [
+                                    "L"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "k",
+                                "synonyms": [
+                                    "K"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "j",
+                                "synonyms": [
+                                    "J"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "i",
+                                "synonyms": [
+                                    "I"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "h",
+                                "synonyms": [
+                                    "H"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "g",
+                                "synonyms": [
+                                    "G"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "f",
+                                "synonyms": [
+                                    "F"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "e",
+                                "synonyms": [
+                                    "E"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "d",
+                                "synonyms": [
+                                    "D"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "c",
+                                "synonyms": [
+                                    "C"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "b",
+                                "synonyms": [
+                                    "B"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "a",
+                                "synonyms": [
+                                    "A"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "task",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "assign"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "create"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "differentiate"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
