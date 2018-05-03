@@ -32,6 +32,8 @@ const missingnumber = "number is not present, please note that for trignometric 
 
 const GET_FACT_MESSAGE = "Here's your answer. ";
 
+const GET_HELP = " .Say Help for a sample utterance";
+
 const HELP_MESSAGE = 'You can say. '+ simpleutterance1+ ' , or, you can say. stop... What can I help you with?';
 const HELP_REPROMPT = 'What can I help you with?';
 const STOP_MESSAGE = 'Goodbye!';
@@ -41,6 +43,20 @@ const SOLVEREPEAT_MESSAGE = " .Would you like to do another maths problem ? You 
  build on the expressions that you have created.";
 const TRIG_FUNC = ["sine","cosine","tan","cot","secant","cosecant"];
 const OTHER_FUNC = ["reverse","inverse","log","exponent"];
+const NORMAL_FUNC = ['add','subtract','multiply','power','divide'];
+
+//SUPPORTED SLOT VALUES
+const taskvals = ['create','assign'];
+const functionvals = ['differentiate'];
+const operationvals = NORMAL_FUNC.concat(TRIG_FUNC,OTHER_FUNC);
+const symbolvals = ['x','y','z','u','v','w'];
+var alphabetvals = ['a'];
+
+var curalp = 'a';
+for(var i = 1;i<20;i++){
+    curalp = nextChar(curalp);
+    alphabetvals=alphabetvals.concat(curalp);
+}
 
 //=========================================================================================================================================
 //Editing anything below this line might break your skill.
@@ -61,10 +77,10 @@ String.prototype.returnAll = function(replacement,search) {
 var createequation = function(text) {
 	return  text.replaceAll(" squared", "^2").replaceAll(" cubed", "^3")
 				.replaceAll("add", "+").replaceAll("subtract", "-").replaceAll("multiply", "*").replaceAll("divide", "/").replaceAll("equals", "=")
-				.replaceAll("zero", "0").replaceAll("reverse", "-1*").replaceAll("inverse", "1/").replaceAll("power", "^")
-				.replaceAll("sine", "sin").replaceAll("cosine", "cos").replaceAll("tan", "tan")
-				.replaceAll("cot", "cot").replaceAll("secant", "sec").replaceAll("cosecant", "csc")
-				.replaceAll("log", "log").replaceAll("exponent", "exp").replaceAll("root", "root")
+				.replaceAll("zero", "0").replaceAll("{reverse}", "-1*").replaceAll("{inverse}", "1/").replaceAll("power", "^")
+				.replaceAll("{sine}", "sin").replaceAll("{cosine}", "cos").replaceAll("{tan}", "tan")
+				.replaceAll("{cot}", "cot").replaceAll("{secant}", "sec").replaceAll("{cosecant}", "csc")
+				.replaceAll("{log}", "log").replaceAll("{exponent}", "exp").replaceAll("root", "root")
 				.replaceAll("open bracket", "(").replaceAll("close bracket", ")");
 };
 
@@ -86,13 +102,6 @@ var simplifytext = function(text) {
     }
 };
 
-var echoshowanswer = function(dv){
-	 this.response.cardRenderer(SKILL_NAME, "The answer is: " + dv.toString() + "\n" + "\n" +" The latex expression is: " + dv.toTex());
-};
-
-var echoshowexpression = function(expr){
-	 this.response.cardRenderer(SKILL_NAME, "The expression is: " + expr + "\n");
-};
 
 function isEmpty(obj) {
   return Object.keys(obj).length === 0;
@@ -113,7 +122,7 @@ var substituteexpression = function(expr,dictCurrent){
             expr = expr.replace(replacer,value); 
         }
     }
-    console.log("expression after replacing:",expr)
+    console.log("expression after replacing:",expr);
     return expr;
 };
 
@@ -135,14 +144,51 @@ const handlers = {
 		//var dv;
 		//var trig=false;
     	//var dict={};    	
-  	
+  	    var message;
     	var expr;
-    	var originalsymbol = symbol;
-    	
-    	if(task=="assign"){
+        var originalsymbol = symbol;
+        var success=true;
+
+        if(task=="assign"){
     		symbol = alphabet;
     		alphabet = newalphabet;
     	}
+
+        if(!taskvals.includes(task)){
+            success=false;
+            message=message="Supported Types for task are: " + taskvals + ". You have provided:" + task;
+        }else if(!symbolvals.includes(symbol)){
+            if(task=="create"){
+                success=false;
+                message="Supported Types for symbol in case of create are: " + symbolvals + ". You have provided:" + symbol;  
+            }else if(task=="assign"){
+                if(!alphabetvals.includes(symbol)){
+                    message="Supported Types for symbol in case of assign are: " + alphabetvals + ". You have provided:" + symbol;  
+                }
+            }
+         
+        }else if(!operationvals.includes(operation)){
+            success=false;
+            message="Supported Types for operations are: " + operationvals + ". You have provided:" + operation ; 
+        }else if(!alphabetvals.includes(alphabet)) {
+            success=false;
+            message="Supported Types for variable names are: " + alphabetvals + ". You have provided:" + alphabet; 
+        }else if(isNaN(number)){
+            if(TRIG_FUNC.includes(operation)  || OTHER_FUNC.includes(operation)){
+                console.log(missingnumber);
+            }else{
+                success=false;
+                message="The last part should be a number. ";
+            }
+        }
+        
+        if(!success) {
+            this.response.speak(message + GET_HELP).listen(GET_HELP);
+            this.emit(':responseReady');
+        }else{
+
+    	
+
 		var origoperation = operation;
 		symbol = "(" + symbol + ")";
 		if(TRIG_FUNC.includes(origoperation) || OTHER_FUNC.includes(origoperation)){
@@ -176,120 +222,133 @@ const handlers = {
 		console.log("operation is ",operation);
 		//dict[origsymbol] = "(" + expr + ")";
 		
-		if(task=="create" || task=="assign"){
-		  console.log(expr);
-		  this.attributes.allvariables["("+alphabet+")"] = "(" + expr + ")";
-          //echoshowexpression(expr);
-          var speechexpr = createspeech(expr);
-          var nextalphabet = nextChar(alphabet);
-          this.emit(':ask',"You entered the expression ."+speechexpr + " .Please continue building\
-           your expression by saying. continue. assign. "+ nextalphabet + ". " + alphabet + ". add. five. and once done, solve it by saying. \
-           solve. differentiate. " + originalsymbol + ". " + nextalphabet + " . Try help in case of issues", "Please say. that again? Try help in case of issues");
+        console.log(expr);
+        this.attributes.allvariables["("+alphabet+")"] = "(" + expr + ")";
+        //echoshowexpression(expr);
+        var speechexpr = createspeech(expr);
+        var nextalphabet = nextChar(alphabet);
+        if(task=="create"){
+            message = "You entered the expression ."+speechexpr + " .Please continue building\
+            your expression for example by saying. continue. assign. "+ nextalphabet + ". " + alphabet + ". add. five. and once done, solve it by saying. \
+            solve. differentiate. " + originalsymbol + ". " + nextalphabet;
+        } else if(task=="assign"){
+            message = "You entered the expression ."+speechexpr + " .Please continue building\
+            your expression for example by saying. continue. assign. "+ nextalphabet + ". " + alphabet + ". add. five. Also make sure you have defined an symbol which will be used to differentiate against. \
+            This can be done for example by saying. " + createutterance1 + ". Once done, solve it by saying. \
+            solve. differentiate. x. " + nextalphabet;
+        }
+        this.response.speak(message + GET_HELP).listen(GET_HELP);
+        //this.emit(':ask',, "Please say. that again? Try help in case of issues");
 
-		  //this.response.cardRenderer(SKILL_NAME, "The answer is: " + expr.toString() + "\n" + "\n" +" The latex expression is: " + expr.toTex());
-		  //this.response.speak(speechOutput + REPEAT_MESSAGE).listen(REPEAT_MESSAGE); 
-		  //this.emit(':tell',speechOutput,"try again"); 
-		  this.emit(':responseReady'); 
-		}else{
-		  console.log(ERROR_MESSAGE);
-          this.emit(':ask',ERROR_MESSAGE,"Do you want to try again?"); 
-		}		
+        //this.response.cardRenderer(SKILL_NAME, "The answer is: " + expr.toString() + "\n" + "\n" +" The latex expression is: " + expr.toTex());
+        //this.response.speak(speechOutput + REPEAT_MESSAGE).listen(REPEAT_MESSAGE); 
+        //this.emit(':tell',speechOutput,"try again"); 
+        this.emit(':responseReady'); 
+		
+     }	
     },
     
         'DirectIntent': function () {
         //var https = require('https');
 		
-		var task = this.event.request.intent.slots.task.value;
+		var task = this.event.request.intent.slots.function.value;
 		var variable = simplifytext(this.event.request.intent.slots.variable.value);
 		var symbol = simplifytext(this.event.request.intent.slots.symbol.value);
 		var operation = this.event.request.intent.slots.operation.value;
-		var number = this.event.request.intent.slots.number.value;
-		
-		var dv;
-		//var trig=false;
-		var expr;
-		var answer;
-		
-		//var origsymbol = symbol;
-		var origoperation = operation;
-		symbol = "(" + symbol + ")";
+        var number = this.event.request.intent.slots.number.value;
+        var message;
+        var success=true;
 
-        if(variable==undefined || symbol==undefined){
-            this.emit('HelpIntent');
+        if(!functionvals.includes(task)){
+            success=false;
+            message="Supported Types for function are: " + functionvals + ". You have provided:" + task;
+        }else if(!symbolvals.includes(variable)){
+            success=false;
+            message="Supported Types for variables are: " + symbolvals + ". You have provided:" + variable;           
+        }else if(!symbolvals.includes(symbol)){
+            success=false;
+            message="Supported Types for symbol are: " + symbolvals + ". You have provided:" + symbol;
+        }else if(!operationvals.includes(operation)){
+            success=false;
+            message="Supported Types for operations are: " + operationvals + ". You have provided:" + operation;     
+        }else if(isNaN(number)){
+            if(TRIG_FUNC.includes(operation)  || OTHER_FUNC.includes(operation)){
+                console.log(missingnumber);
+            }else{
+                success=false;
+                message="The last part should be a number. " + "You have provided:" + number;
+            }
         }
-        if(number==undefined){
-                if(TRIG_FUNC.includes(origoperation)  || OTHER_FUNC.includes(origoperation)){
-                    console.log(missingnumber);
-                }else{
-                    this.emit('HelpIntent');
-                }
-        }
-
-		if(operation!=undefined){
-			if(TRIG_FUNC.includes(origoperation)  || OTHER_FUNC.includes(origoperation)){
-			  //trig = true;
-			  //symbol = "(" + symbol + ")";
-			  operation = createequation(operation);
-			  if(TRIG_FUNC.includes(origoperation)){
-			    if(number==undefined){
-			        number="";
-			    }else if(number==1){
-			        number="";  //inverse
-			        operation = "a"+operation;
-			    }else if(number==2){
-			        number="";  //hyperbolic
-			        operation = operation+"h";
-			    }else if(number==3){
-			        number="";  //inverse hyperbolic
-			        operation = "a"+operation+"h";
-			    }
-			  }
-			 expr = operation+symbol;
-			 }else {
-			    operation = createequation(operation+number);
-			    expr = symbol+operation;
-			}
-		
-		
-		
-			
-			console.log("operation is ",operation);
-			//dict[origsymbol] = "(" + expr + ")";
-			//this.attributes.allvariables[origsymbol] = "(" + expr + ")";
         
-		if(task=="differentiate"){
-		  
-		  console.log(expr);
-		  dv = math.derivative(expr, variable);
-		  console.log(dv.toString());
-		  answer = createspeech(dv.toString());
-		  console.log(answer);
-		  //math.derivative('x^2', 'x'); 
-		  		console.log(this.attributes.allvariables);
-		  const speechOutput = GET_FACT_MESSAGE + answer;
-		  
-		  this.attributes.lastSpeech = answer;
-		  this.response.cardRenderer(SKILL_NAME, "The answer is: " + dv.toString() + "\n" + "\n" +" The latex expression is: " + dv.toTex());
-		  this.response.speak(speechOutput + REPEAT_MESSAGE).listen(REPEAT_MESSAGE); 
-		  //this.emit(':tell',speechOutput,"try again"); 
-		  this.emit(':responseReady'); 
-		}else{
-		  console.log(ERROR_MESSAGE);
-		}
+        if(!success) {
+            this.response.speak(message + GET_HELP).listen(GET_HELP);
+            this.emit(':responseReady');
+        }else{
 
-      }else{
-          this.emit('HelpIntent')
-      }  
-		
+            var dv;
+            //var trig=false;
+            var expr;
+            var answer;
+            
+            //var origsymbol = symbol;
+            var origoperation = operation;
+            symbol = "(" + symbol + ")";
+
+            if(TRIG_FUNC.includes(origoperation)  || OTHER_FUNC.includes(origoperation)){
+            //trig = true;
+                operation = "{" + operation + "}";
+                operation = createequation(operation);
+                if(TRIG_FUNC.includes(origoperation)){
+                    if(number==1){
+                        number="";  //inverse
+                        operation = "a"+operation;
+                    }else if(number==2){
+                        number="";  //hyperbolic
+                        operation = operation+"h";
+                    }else if(number==3){
+                        number="";  //inverse hyperbolic
+                        operation = "a"+operation+"h";
+                    }else{
+                        number="";
+                    }
+                }
+                expr = operation+symbol;
+            }else {
+                operation = createequation(operation+number);
+                expr = symbol+operation;
+            }
+        
+        
+        
+            
+            console.log("operation is ",operation);
+            //dict[origsymbol] = "(" + expr + ")";
+            //this.attributes.allvariables[origsymbol] = "(" + expr + ")";    
+        
+            console.log(expr);
+            dv = math.derivative(expr, variable);
+            console.log(dv.toString());
+            answer = createspeech(dv.toString());
+            console.log(answer);
+            //math.derivative('x^2', 'x'); 
+            console.log(this.attributes.allvariables);
+            const speechOutput = GET_FACT_MESSAGE + answer;
+            
+            this.attributes.lastSpeech = answer;
+            this.response.cardRenderer(SKILL_NAME, "The answer is: " + dv.toString() + "\n" + "\n" +" The latex expression is: " + dv.toTex());
+            this.response.speak(speechOutput + REPEAT_MESSAGE).listen(REPEAT_MESSAGE); 
+            //this.emit(':tell',speechOutput,"try again"); 
+            this.emit(':responseReady'); 
+        }
    },
     'SolveExpressionIntent': function () {
         //var https = require('https');
 		
-		var task = this.event.request.intent.slots.task.value;
+		var task = this.event.request.intent.slots.function.value;
 		var variable = simplifytext(this.event.request.intent.slots.variable.value);
 		//var symbol = simplifytext(this.event.request.intent.slots.symbol.value);
 		var alphabet = simplifytext(this.event.request.intent.slots.alphabet.value);
-		var operation = this.event.request.intent.slots.operation.value;
+		//var operation = this.event.request.intent.slots.operation.value;
 		//var number = this.event.request.intent.slots.number.value;
 		var dv;
 		//var trig=false;
@@ -298,19 +357,39 @@ const handlers = {
         var dictnew;
         var dictAllVariables = {};
         var finalexpr;
+        var success=true;
+        var message;
 		
 		//var origsymbol = symbol;
 		//var origoperation = operation;
 
         dictnew = this.attributes.allvariables;
 
-        if(isEmpty(dictnew) || task==undefined || variable ==undefined || alphabet==undefined){
-            this.emit(':ask','Invalid Operation. To create a complicated mathematical expression Say. ' + createutterance1 + ' .After that you can say. '+
-            continueutterance1 + ' .And finally solve by saying.' + solveutterance2);
-            this.emit(':ask','Do you want to try again. For simple cases you can also try '+simpleutterance1,'Say. '+ simpleutterance1);
+        if(!functionvals.includes(task)){
+            success=false;
+            message="Supported Types for function are: " + functionvals + ". You have provided:" + task;
+        }else if(!symbolvals.includes(variable)){
+            success=false;
+            message="Supported Types for variable with which to differentiate are: " + symbolvals + ". You have provided:"+variable;
+        }else if(!alphabetvals.includes(alphabet)){
+            success=false;
+            message="Supported Types for symbols or variable names are: " + alphabetvals+ ". You have provided:"+alphabet;
+        }
+
+        if(isEmpty(dictnew)){
+            success=false;
+            message = 'Invalid Operation. You have not created any expression before solving. To create a complicated mathematical expression Say. ' + createutterance1 + ' .After that you can say. '+
+            continueutterance1 + ' .And finally solve by saying.' + solveutterance2;
+            //this.emit(':ask','Invalid Operation. You have not created any expression before solving. To create a complicated mathematical expression Say. ' + createutterance1 + ' .After that you can say. '+
+            //continueutterance1 + ' .And finally solve by saying.' + solveutterance2);
+            //this.emit(':ask','Do you want to try again. For simple cases you can also try '+simpleutterance1,'Say. '+ simpleutterance1);
+        }
+        
+        if(!success) {
+            this.response.speak(message + GET_HELP).listen(GET_HELP);
+            this.emit(':responseReady');
         }else{
-	
-            if(operation==undefined && task=="differentiate"){
+
                 console.log(this.attributes.allvariables);
                 
                 //var replacer;
@@ -348,7 +427,7 @@ const handlers = {
                 finalexpr = dictAllVariables["("+alphabet+")"];
                 console.log("final expr:"+finalexpr);
                 
-                if(finalexpr!=undefined && variable!=undefined){
+                if(finalexpr!=undefined){
 	                dv = math.derivative(finalexpr, variable);
 	                console.log(dv.toString());
 	                answer = createspeech(dv.toString());
@@ -359,11 +438,11 @@ const handlers = {
 	                this.response.speak(speechOutput + SOLVEREPEAT_MESSAGE).listen(SOLVEREPEAT_MESSAGE); 
 	                //this.emit(':ask',speechOutput,"Do you want to try again?");
 	                this.emit(':responseReady'); 
-                }else{
-                       this.emit(':ask','Invalid Operation. To create a complicated mathematical expression Say. ' + createutterance1 + ' .After that you can say. '+
-            		   continueutterance1 + ' .And finally solve by saying. ' + solveutterance2);
-            		   this.emit(':ask','Do you want to try again. For simple cases you can also try '+simpleutterance1,'Say. '+ simpleutterance1);     	
-                }
+            }else{
+                message = 'You have note defined the symbol or variable name: ' + alphabet+ ' previously. Please define it using create and assign as follows: . ' + ' To create a complicated mathematical expression Say. ' + createutterance1 + ' .After that you can say. '+
+                continueutterance1 + ' .And finally solve by saying.' + solveutterance2;
+                this.response.speak(message + GET_HELP).listen(GET_HELP);
+                this.emit(':responseReady');
             }
         }
     },
@@ -397,7 +476,7 @@ const handlers = {
         this.emit(':responseReady'); 
     },
     'Unhandled':function(){
-        this.emit(':ask',ERROR_MESSAGE,"try again. Say. Help if you want to hear sample request."); 
+        this.emit(':ask',ERROR_MESSAGE,"try again. Start over by invoking the skill and Say. Help if you want to hear sample request."); 
         //this.emit('AMAZON.HelpIntent');
     }
     
