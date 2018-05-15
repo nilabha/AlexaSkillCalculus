@@ -1,8 +1,8 @@
 # Build An Alexa Skill for Calculus
 
-This Alexa skill is for a basic maths solution skill. The objective is to help students to learn differentiation problems. It can also be used by teachers to teach their students and checking answers. Sometimes it can also be used to lookup solutions to complicated expressions reducing the need to solve them manually. Sometime researches may need to do quick differentiation while reading/developing research papers. 
+This Alexa skill is for a basic maths solution skill. The objective is to help students to learn differentiation problems. It can also be used by teachers to teach their students and checking answers. Sometimes it can also be used to lookup solutions to complicated expressions reducing the need to solve them manually. Sometimes researches may need to do quick differentiation while reading/developing research papers. 
 
-If you would like to see an example of this skill in action, see the folder instruction. You can also watch a demo in the url  [Alexa Skill Demo](https://youtu.be/YaSnjg9qvvU).
+If you would like to see an example of this skill in action, see the folder instruction. You can also view the demo  and steps in the presentation in the instruction folder.
 
 
 
